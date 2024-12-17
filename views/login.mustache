@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <style>
+        body {padding-top: 50px;}
+        .main__container { width: 100%; padding: 0 20%; }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="main__container">
+        <h2>Login</h2>
+        {{#error}}
+            <p style="color: red;">{{ error }}</p>
+        {{/error}}
+        <form action="/login" method="POST">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

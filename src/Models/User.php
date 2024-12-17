@@ -7,21 +7,43 @@ use \PDO;
 
 class User extends BaseModel
 {
-    public function save($data) {
+    public function verifyLogin($email, $password)
+{
+    $sql = "SELECT id, password FROM users WHERE email_address = :email";
+    $statement = $this->db->prepare($sql);
+    $statement->execute(['email' => $email]);
+
+    $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        return $user['id']; // Return user ID on successful login
+    }
+    return false;
+}
+
+
+
+    public function save($data)
+    {
         $sql = "INSERT INTO users 
                 SET
-                    complete_name=:complete_name,
-                    email=:email,
-                    `password`=:password_hash";        
+                    username = :username,
+                    first_name = :first_name,
+                    last_name = :last_name,
+                    email_address = :email,
+                    `password` = :password_hash";        
         $statement = $this->db->prepare($sql);
         $password_hash = $this->hashPassword($data['password']);
         $statement->execute([
-            'complete_name' => $data['complete_name'],
+            'username' => $data['username'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password_hash' => $password_hash
         ]);
     
-        return $statement->rowCount();
+        // Return the last inserted ID
+        return $this->db->lastInsertId();
     }
 
     protected function hashPassword($password)
@@ -31,7 +53,7 @@ class User extends BaseModel
 
     public function verifyAccess($email, $password)
     {
-        $sql = "SELECT password_hash FROM users WHERE email = :email";
+        $sql = "SELECT `password` FROM users WHERE email_address = :email";
         $statement = $this->db->prepare($sql);
         $statement->execute([
             'email' => $email
@@ -41,7 +63,8 @@ class User extends BaseModel
             return false;
         }
 
-        return password_verify($password, $result['password_hash']);
+        // Verify the hashed password
+        return password_verify($password, $result['password']);
     }
 
     public function getAllUsers()
@@ -49,8 +72,6 @@ class User extends BaseModel
         $sql = "SELECT * FROM users";
         $statement = $this->db->prepare($sql);
         $statement->execute();
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
-
 }

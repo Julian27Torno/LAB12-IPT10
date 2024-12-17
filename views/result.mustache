@@ -17,7 +17,7 @@
 <body>
     <div class="main__container">
         <h2>Result</h2>
-        <h3>Hi {{ complete_name }} &lt;{{ email }}&gt;!</h3>
+        <h3>Hi {{ username }}</h3>
 
         <h1>You got a score of {{ total_score }} out of {{ question_items }} items.</h1>
 
@@ -31,7 +31,7 @@
             </tr>
             {{#questions}}
             <tr>
-                <td>{{ item_number }}</td>
+                <td>{{ question_item_number }}</td>
                 <td>{{ question }}</td>
                 <td>
                     {{#choices}}

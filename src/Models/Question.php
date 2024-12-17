@@ -10,13 +10,13 @@ class Question extends BaseModel
     public function save($data) {
         $sql = "INSERT INTO questions 
                 SET
-                    item_number=:item_number,
+                    question_item_number=:question_item_number,
                     question=:question,
                     choices=:choices,
                     correct_answer=:correct_answer";        
         $statement = $this->db->prepare($sql);
         $statement->execute([
-            'item_number' => $data['item_number'],
+            'question_item_number' => $data['question_item_number'],
             'question' => $data['question'],
             'choices' => $data['choices'],
             'correct_answer' => $data['correct_answer']
@@ -25,12 +25,12 @@ class Question extends BaseModel
         return $statement->rowCount();
     }
 
-    public function getQuestion($item_number)
+    public function getQuestion($question_item_number)
     {
-        $sql = "SELECT * FROM questions WHERE item_number = :item_number";
+        $sql = "SELECT * FROM questions WHERE question_item_number = :question_item_number";
         $statement = $this->db->prepare($sql);
         $statement->execute([
-            'item_number' => $item_number
+            'question_item_number' => $question_item_number
         ]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         return $result;
@@ -58,13 +58,22 @@ class Question extends BaseModel
     {
         $score = 0;
         $questions = $this->getAllQuestions();
+    
         foreach ($questions as $question) {
-            $user_answer = $answers[$question['item_number']];
-            if ($user_answer == $question['correct_answer']) {
-                $score++;
+            $item_number = $question['question_item_number'];
+    
+            // Check if the answer for this question exists
+            if (isset($answers[$item_number])) {
+                $user_answer = $answers[$item_number];
+    
+                // Compare user answer with the correct answer
+                if ($user_answer == $question['correct_answer']) {
+                    $score++;
+                }
             }
         }
         return $score;
     }
+    
 
 }

@@ -4,35 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam</title>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-
     <style>
         body {padding-top: 50px;}
-        .main__container { width: 100dvw; padding: 0px 500px;}
-        h2 { text-align: center;}
+        .main__container { width: 100%; padding: 0 10%; }
+        .question-container { margin-bottom: 30px; }
+        h2, h3 { text-align: center; }
     </style>
-
 </head>
 <body>
     <div class="main__container">
-        <h2>Question #{{ item_number }}</h2>
-        <h3>{{ question }}</h3>
+        <h2>Exam Questions</h2>
 
-        <div>
-            Choices: <br>
-            <form action="/exam" method="POST">
-                <input type="hidden" name="item_number" value="{{ item_number }}" />
+      <form action="/exam" method="POST">
+    {{#questions}}
+        <div class="question-container">
+            <h3>Question #{{ question_item_number }}</h3>
+            <p>{{ question }}</p>
+
+            <div>
                 {{#choices}}
-                    <input type="radio" name="answer" value="{{ letter }}" />{{ choice }}
-                    <br>
+                    <label>
+                        <input type="radio" name="answers[{{ question_item_number }}]" value="{{ letter }}">
+                        {{ letter }}. {{ choice }}
+                    </label><br>
                 {{/choices}}
-
-                <button type="submit">NEXT</button>
-
-            </form>
+            </div>
         </div>
+    {{/questions}}
 
+    <button type="submit">Submit All</button>
+</form>
     </div>
 </body>
 </html>
